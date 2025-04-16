@@ -1,0 +1,30 @@
+name: Generate Sitemap
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🧠 Checkout repo
+        uses: actions/checkout@v3
+
+      - name: 🔧 Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: 🗺️ Generate sitemap.xml
+        run: |
+          npm install
+          npm run sitemap
+
+      - name: 📦 Commit & Push sitemap.xml
+        run: |
+          git config user.name "Brainmash Bot"
+          git config user.email "bot@brainmash.xyz"
+          git add sitemap.xml
+          git commit -m "🤖 auto: update sitemap.xml [skip ci]" || echo "No changes"
+          git push
