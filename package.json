@@ -1,0 +1,11 @@
+{
+  "name": "brainmash-sitemap-generator",
+  "version": "1.0.0",
+  "description": "Auto-generate sitemap.xml for Brainmash static site",
+  "main": "generate-sitemap.js",
+  "scripts": {
+    "sitemap": "node generate-sitemap.js"
+  },
+  "author": "brainmash.xyz",
+  "license": "MIT"
+}
