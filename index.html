@@ -8,14 +8,15 @@
     body {
       background-color: #0a0a0a;
       color: #39ff14;
-      font-family: 'Courier New', Courier, monospace; line-height: 1.5;
+      font-family: 'Courier New', Courier, monospace;
+      line-height: 1.5;
       padding: 2rem;
-      max-width: 100%; padding-left: 1rem; padding-right: 1rem;
+      max-width: 100%;
+      padding-left: 1rem;
+      padding-right: 1rem;
       margin: auto;
     }
-    h1, h2 {
-      color: #ff0080;
-    }
+    h1, h2 { color: #ff0080; }
     input, select {
       padding: 0.5rem;
       margin: 0.5rem 0;
@@ -39,36 +40,22 @@
       border-left: 4px solid #39ff14;
       white-space: pre-line;
     }
-    .share-button {
-      background: #00ffff;
-      color: #000;
-      margin-top: 1rem;
-    }
-    .clipboard-button {
-      background: #39ff14;
-      color: #000;
-      margin-top: 1rem;
-    }
-    .remix-button {
-      background: #ffcc00;
-      color: #000;
-      margin-top: 1rem;
-    }
+    .share-button { background: #00ffff; color: #000; margin-top: 1rem; }
+    .clipboard-button { background: #39ff14; color: #000; margin-top: 1rem; }
+    .remix-button { background: #ffcc00; color: #000; margin-top: 1rem; }
     #remix-status {
-  margin-top: 0.5rem;
-  font-size: 0.9rem;
-  text-align: center;
-  font-weight: bold;
-  color: #e6e600;
-}
+      margin-top: 0.5rem;
+      font-size: 0.9rem;
+      text-align: center;
+      font-weight: bold;
+      color: #e6e600;
+    }
     footer {
       margin-top: 3rem;
       font-size: 0.85rem;
       color: #999;
     }
-    a {
-      color: #00ffff;
-    }
+    a { color: #00ffff; }
   </style>
 </head>
 <body>
@@ -104,164 +91,45 @@
   <button class="share-button" onclick="shareIdea()" aria-label="Share this idea on Twitter">📤 Share This</button>
 
   <div id="remix-status">Remixes left: 5</div>
-
   <div id="output" class="output" role="region" aria-live="polite"></div>
-  
+  <div id="misfortune-fusion" style="margin-top:1.5rem; background:#111; color:#ffcc00; border-left:4px solid #ffcc00; padding:1rem; font-style:italic; display:none;"></div>
 
-<div id="misfortune-fusion" style="margin-top:1.5rem; background:#111; color:#ffcc00; border-left:4px solid #ffcc00; padding:1rem; font-style:italic; display:none;"></div>
+  <footer>
+    <div style="background-color:#222; border:2px solid #ffcc00; color:#ffcc00; padding:1rem; margin-top:1rem; text-align:center;">
+      🍪 <strong>Dark, crispy, brutally honest?</strong><br>
+      Explore our sister project: <a href="https://misfortunecookie.top" target="_blank" rel="noopener noreferrer" style="color:#ffcc00; font-weight:bold; text-decoration:underline;">MisfortuneCookie.top</a><br>
+      <em>Fortune cookies laced with mischief.</em>
+    </div>
+    <p style="margin-top: 1rem;">
+      <strong>DISCLAIMER:</strong> This site uses AI-assisted logic and is designed for entertainment and creative exploration. All inputs are provided by users voluntarily. We do not monitor or moderate submissions. The creators are <em>not liable</em> for any content generated, actions taken, or interpretations made based on this tool's outputs.
+    </p>
+    <p style="margin-top: 1rem;">
+      <a href="/privacy.html">Privacy</a> |
+      <a href="/terms.html">Terms</a> |
+      <a href="/affiliate.html">Affiliate Disclosure</a> |
+      <a href="/guide.html">Guide</a>
+    </p>
+  </footer>
+<script>
+let remixCount = 0;
+const remixLimit = 5;
+let cooldownActive = false;
+let shownMisfortunes = new Set();
 
+const bannedWords = [
+  "death", "kill", "murder", "rape", "torture", "nazi", "genocide",
+  "abuse", "suicide", "terrorist", "bomb", "molest", "pedophile",
+  "ethnic cleansing", "shooting", "violence", "hate", "racist",
+  "assault", "incest", "sex crime"
+];
 
-    
+const misfortuneFallback = [
+  "You will regret clicking refresh.",
+  "A raccoon in a business suit is plotting your demise.",
+  "Nothing improves without making it worse first."
+];
 
-
-
-  <script>
-    let remixCount = 0;
-    const remixLimit = 5;
-    let cooldownActive = false;
-
-    function updateRemixStatus() {
-      const status = document.getElementById("remix-status");
-      if (cooldownActive) {
-        status.innerText = "⏳ Cooldown active… please wait before remixing again.";
-        status.style.color = "orange";
-      } else {
-        const remaining = remixLimit - remixCount;
-        status.innerText = `Remixes left: ${remaining}`;
-        status.style.color = remaining > 0 ? "#39ff14" : "red";
-      }
-    }
-
-   
-      "death",
-      "kill", "murder", "rape", "torture", "nazi", "genocide", "abuse", "suicide",
-      "terrorist", "bomb", "molest", "pedophile", "ethnic cleansing", "shooting",
-      "violence", "hate", "racist", "assault", "incest", "sex crime"
-    ];
-
-    
-  fortuneFusion: [
-    "💭 What if {i1} was cursed with the fate of a misfortune cookie that always reveals {i2} and {i3}?",
-    "🌀 Combine {i1}, {i2}, and a cryptic misfortune to summon philosophical chaos involving {i3}.",
-    "🥠 A world where {i1} is born from bad luck, and every use of {i2} triggers {i3}..."
-  ] /* unchanged content from before */ };
-
-    function oppositeOf(word) {
-      const opposites = {
-        fire: "ice",
-        love: "indifference",
-        speed: "slowness",
-        gravity: "levity",
-        control: "chaos",
-        fear: "confidence"
-      };
-      return opposites[word.toLowerCase()] || "an unexpected contrast";
-    }
-
-    function containsBannedWord(...inputs) {
-      return inputs.some(input =>
-        bannedWords.some(banned =>
-          input.toLowerCase().includes(banned)
-        )
-      );
-    }
-
-    function pickTemplate(category, i1, i2, i3) {
-      const t = templates[category];
-      const raw = t[Math.floor(Math.random() * t.length)];
-      return raw.replace(/{i1}/g, i1).replace(/{i2}/g, i2).replace(/{i3}/g, i3);
-    }
-
-    $1
-      const fusionBox = document.getElementById("misfortune-fusion");
-      fusionBox.style.display = "none";
-      remixCount = 0;
-      cooldownActive = false;
-      updateRemixStatus();
-
-      const i1 = document.getElementById("input1").value.trim();
-      const i2 = document.getElementById("input2").value.trim();
-      const i3 = document.getElementById("input3").value.trim();
-      const selected = document.getElementById("category").value;
-
-      if (!i1 || !i2 || !i3) {
-        document.getElementById("output").innerText = "Please enter all three concepts.";
-        return;
-      }
-
-      if (i1.length > 50 || i2.length > 50 || i3.length > 50) {
-        document.getElementById("output").innerText = "One or more inputs are too long. Please keep them under 50 characters.";
-        return;
-      }
-
-      if (containsBannedWord(i1, i2, i3)) {
-        document.getElementById("output").innerText = "🚫 Your inputs may contain inappropriate or harmful terms. Please try again with different words.";
-        return;
-      }
-
-      const fortuneSynced = ["death", "failure", "crisis", "silence", "emptiness"];
-$1
-      let ideas = [];
-      for (let i = 0; i < 3; i++) {
-        const sync = [i1, i2, i3].some(w => fortuneSynced.includes(w.toLowerCase()));
-        const cat = selected || (sync ? 'fortuneFusion' : categories[Math.floor(Math.random() * categories.length)]);
-        const cat = selected || categories[Math.floor(Math.random() * categories.length)];
-        ideas.push(pickTemplate(cat, i1, i2, i3));
-      }
-      $1
-
-      const misfortune = getLocalMisfortune();
-      fusionBox.innerText = `🥠 Misfortune Cookie says: “${misfortune}”`;
-      fusionBox.style.display = "block";
-          }
-        })
-        .catch(() => {
-          fusionBox.innerText = "🥠 Misfortune Cookie says: “Disaster avoided. Fortune failed to load.”";
-          fusionBox.style.display = "block";
-        });
-    }
-
-    function remixIdea() {
-      if (cooldownActive) return;
-      if (remixCount >= remixLimit) {
-        cooldownActive = true;
-        updateRemixStatus();
-        setTimeout(() => {
-          cooldownActive = false;
-          remixCount = 0;
-          updateRemixStatus();
-        }, 180000); // 3 minutes cooldown
-        return;
-      }
-      remixCount++;
-      updateRemixStatus();
-      generateIdea();
-    }
-
-    function copyToClipboard() {
-      const output = document.getElementById("output").innerText;
-      if (!output) return alert("Nothing to copy yet!");
-      navigator.clipboard.writeText(output).then(() => {
-        alert("Copied to clipboard!");
-      });
-    }
-
-    function shareIdea() {
-      const text = document.getElementById("output").innerText;
-      if (!text) return alert("Nothing to share yet!");
-      const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text + '\n\nTry it: brainmash.com')}`;
-      window.open(url, '_blank');
-    }
-  
-    let shownMisfortunes = new Set();
-
-$1
-      "You will regret clicking refresh.",
-      "A raccoon in a business suit is plotting your demise.",
-      "Nothing improves without making it worse first."
-    ];
-
-    function getLocalMisfortune() {
+function getLocalMisfortune() {
   const source = Array.isArray(window.misfortunes) && window.misfortunes.length
     ? window.misfortunes
     : misfortuneFallback;
@@ -273,7 +141,72 @@ $1
   shownMisfortunes.add(selected);
   return selected;
 }
-    }
+
+function updateRemixStatus() {
+  const status = document.getElementById("remix-status");
+  if (cooldownActive) {
+    status.innerText = "⏳ Cooldown active… please wait before remixing again.";
+    status.style.color = "orange";
+  } else {
+    const remaining = remixLimit - remixCount;
+    status.innerText = `Remixes left: ${remaining}`;
+    status.style.color = remaining > 0 ? "#39ff14" : "red";
+  }
+}
+
+function oppositeOf(word) {
+  const opposites = {
+    fire: "ice",
+    love: "indifference",
+    speed: "slowness",
+    gravity: "levity",
+    control: "chaos",
+    fear: "confidence"
+  };
+  return opposites[word.toLowerCase()] || "an unexpected contrast";
+}
+
+function containsBannedWord(...inputs) {
+  return inputs.some(input =>
+    bannedWords.some(banned =>
+      input.toLowerCase().includes(banned)
+    )
+  );
+}
+
+function remixIdea() {
+  if (cooldownActive) return;
+  if (remixCount >= remixLimit) {
+    cooldownActive = true;
+    updateRemixStatus();
+    setTimeout(() => {
+      cooldownActive = false;
+      remixCount = 0;
+      updateRemixStatus();
+    }, 180000);
+    return;
+  }
+  remixCount++;
+  updateRemixStatus();
+  generateIdea();
+}
+
+function copyToClipboard() {
+  const output = document.getElementById("output").innerText;
+  if (!output) return alert("Nothing to copy yet!");
+  navigator.clipboard.writeText(output).then(() => {
+    alert("Copied to clipboard!");
+  });
+}
+
+function shareIdea() {
+  const text = document.getElementById("output").innerText;
+  if (!text) return alert("Nothing to share yet!");
+  const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text + '
+
+Try it: brainmash.xyz')}`;
+  window.open(url, '_blank');
+}
 </script>
 </body>
 </html>
