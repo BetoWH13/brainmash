@@ -63,6 +63,11 @@
   <h2>The Absurd Creativity Engine</h2>
   <p>Drop in <strong>three random concepts</strong> and let the chaos forge you a new idea. This is not your grandma's brainstorming tool.</p>
 
+  <p>
+    <a href="/shop.html">🛒 Visit the Brainmash Bazaar</a> |
+    <a href="/guide.html">🧭 How It Works</a>
+  </p>
+
   <label for="input1" class="sr-only">Concept One</label>
   <input id="input1" aria-label="Concept One" maxlength="50" placeholder="Enter Concept #1 (e.g. Lava)" />
   <label for="input2" class="sr-only">Concept Two</label>
@@ -144,7 +149,7 @@ function generateIdea() {
     myth: ["Myth: The legend of {i1}, {i2}, and the forbidden {i3}."],
     philosophy: ["Philosophy: Is {i1} the opposite of {i2}, or is it just {i3}?"],
     product: ["Product: Introducing a gadget that combines {i1}, {i2}, and {i3}."]
-};
+  };
   const category = templates[selected] ? selected : "chaos";
   const pickTemplate = (arr) => arr[Math.floor(Math.random() * arr.length)]
     .replace(/{i1}/g, i1)
