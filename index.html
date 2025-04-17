@@ -109,7 +109,10 @@
       <a href="/affiliate.html">Affiliate Disclosure</a> |
       <a href="/guide.html">Guide</a>
     </p>
-  </footer>
+  <p style="margin-top: 1rem; font-size: 0.85rem;">
+  Brainmash is powered by a creative prompt framework from <a href="https://discord.gg/edG4wWnrpG" target="_blank" rel="noopener noreferrer">Stunspot & Collaborative Dynamics</a>.
+</p>
+$1
 <script>
 let remixCount = 0;
 const remixLimit = 5;
@@ -207,6 +210,31 @@ function shareIdea() {
 Try it: brainmash.xyz')}`;
   window.open(url, '_blank');
 }
+function enableChaosPack() {
+  const category = document.getElementById("category");
+  if (!document.querySelector('option[value="chaos"]')) {
+    const option = document.createElement("option");
+    option.value = "chaos";
+    option.textContent = "💀 Chaos";
+    category.appendChild(option);
+  }
+  document.body.insertAdjacentHTML('beforeend', `
+    <div style="background:#ff0055; color:#fff; padding:1rem; text-align:center; font-weight:bold; margin-top:1rem;">
+      🧨 CHAOS UNLOCKED: You have accessed the forbidden generator mode.
+    </div>
+  `);
+}
+
+let konamiSequence = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
+let keyBuffer = [];
+
+document.addEventListener('keydown', (e) => {
+  keyBuffer.push(e.key);
+  keyBuffer.splice(-konamiSequence.length - 1, keyBuffer.length - konamiSequence.length);
+  if (keyBuffer.join('') === konamiSequence.join('')) {
+    enableChaosPack();
+  }
+});
 </script>
 </body>
 </html>
