@@ -220,6 +220,61 @@ function shareIdea() {
 Try it: brainmash.xyz')}`;
   window.open(url, '_blank');
 }
+
+function pickTemplate(category, i1, i2, i3) {
+  const t = templates[category];
+  const raw = t[Math.floor(Math.random() * t.length)];
+  return raw.replace(/{i1}/g, i1).replace(/{i2}/g, i2).replace(/{i3}/g, i3);
+}
+
+function generateIdea() {
+  const fusionBox = document.getElementById("misfortune-fusion");
+  fusionBox.style.display = "none";
+  remixCount = 0;
+  cooldownActive = false;
+  updateRemixStatus();
+
+  const i1 = document.getElementById("input1").value.trim();
+  const i2 = document.getElementById("input2").value.trim();
+  const i3 = document.getElementById("input3").value.trim();
+  const selected = document.getElementById("category").value;
+
+  if (!i1 || !i2 || !i3) {
+    document.getElementById("output").innerText = "Please enter all three concepts.";
+    return;
+  }
+
+  if (i1.length > 50 || i2.length > 50 || i3.length > 50) {
+    document.getElementById("output").innerText = "One or more inputs are too long. Please keep them under 50 characters.";
+    return;
+  }
+
+  if (containsBannedWord(i1, i2, i3)) {
+    document.getElementById("output").innerText = "🚫 Your inputs may contain inappropriate or harmful terms. Please try again with different words.";
+    return;
+  }
+
+  const fortuneSynced = ["death", "failure", "crisis", "silence", "emptiness"];
+  const sync = [i1, i2, i3].some(w => fortuneSynced.includes(w.toLowerCase()));
+  const category = selected || (sync ? 'chaos' : Object.keys(templates)[Math.floor(Math.random() * Object.keys(templates).length)]);
+
+  let ideas = [];
+  for (let i = 0; i < 3; i++) {
+    ideas.push(pickTemplate(category, i1, i2, i3));
+  }
+
+  document.getElementById("output").innerText = ideas.join("
+
+");
+
+  if (sync) {
+    const misfortune = getLocalMisfortune();
+    fusionBox.innerText = `🥠 Misfortune Cookie says: “${misfortune}”`;
+    fusionBox.style.display = "block";
+  }
+}`;
+  window.open(url, '_blank');
+}
 function enableChaosPack() {
   const category = document.getElementById("category");
   if (!document.querySelector('option[value="chaos"]')) {
