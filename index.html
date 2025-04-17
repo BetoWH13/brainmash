@@ -132,6 +132,16 @@ const misfortuneFallback = [
   "Nothing improves without making it worse first."
 ];
 
+const templates = {
+  chaos: [
+    "💥 {i1}, {i2}, and {i3} walk into a black hole. Reality resets.",
+    "⚠️ Every time {i1} happens, {i2} explodes and triggers {i3}.",
+    "🌀 A world where {i1} controls gravity, {i2} is currency, and {i3} is illegal.",
+    "🐙 Combine {i1}, {i2}, and {i3} to summon a multilingual octopus cult.",
+    "📉 When {i1} becomes a tech startup and buys {i2}, everyone forgets {i3} exists."
+  ]
+};
+
 function getLocalMisfortune() {
   const source = Array.isArray(window.misfortunes) && window.misfortunes.length
     ? window.misfortunes
@@ -238,3 +248,4 @@ document.addEventListener('keydown', (e) => {
 </script>
 </body>
 </html>
+
