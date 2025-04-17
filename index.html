@@ -97,7 +97,7 @@
   <footer>
     <div style="background-color:#222; border:2px solid #ffcc00; color:#ffcc00; padding:1rem; margin-top:1rem; text-align:center;">
       🍪 <strong>Dark, crispy, brutally honest?</strong><br>
-      Explore our sister project: <a href="https://misfortunecookie.top" target="_blank" rel="noopener noreferrer" style="color:#ffcc00; font-weight:bold; text-decoration:underline;">MisfortuneCookie.top</a><br>
+      Explore our sister project: <a href="[https://misfortunecookie.top](https://misfortunecookie.top)" target="_blank" rel="noopener noreferrer" style="color:#ffcc00; font-weight:bold; text-decoration:underline;">MisfortuneCookie.top</a><br>
       <em>Fortune cookies laced with mischief.</em>
     </div>
     <p style="margin-top: 1rem;">
@@ -109,10 +109,11 @@
       <a href="/affiliate.html">Affiliate Disclosure</a> |
       <a href="/guide.html">Guide</a>
     </p>
-  <p style="margin-top: 1rem; font-size: 0.85rem;">
-  Brainmash is powered by a creative prompt framework from <a href="https://discord.gg/edG4wWnrpG" target="_blank" rel="noopener noreferrer">Stunspot & Collaborative Dynamics</a>.
-</p>
-$1
+    <p style="margin-top: 1rem; font-size: 0.85rem;">
+      Brainmash is powered by a creative prompt framework from <a href="[https://discord.gg/edG4wWnrpG"](https://discord.gg/edG4wWnrpG") target="_blank" rel="noopener noreferrer">Stunspot & Collaborative Dynamics</a>.
+    </p>
+  </footer>
+
 <script>
 let remixCount = 0;
 const remixLimit = 5;
@@ -139,7 +140,17 @@ const templates = {
     "🌀 A world where {i1} controls gravity, {i2} is currency, and {i3} is illegal.",
     "🐙 Combine {i1}, {i2}, and {i3} to summon a multilingual octopus cult.",
     "📉 When {i1} becomes a tech startup and buys {i2}, everyone forgets {i3} exists."
-  ]
+  ],
+  fusion: ["Fusion: {i1} + {i2} + {i3} = ???"],
+  disruption: ["Disruption: What if {i1} disrupted {i2} in the world of {i3}?"],
+  snapshot: ["Snapshot: Imagine a moment when {i1}, {i2}, and {i3} collide."],
+  storyline: ["Storyline: {i1} embarks on a journey with {i2} to overcome {i3}."],
+  startup: ["Startup: A company that uses {i1} and {i2} to solve {i3}."],
+  meme: ["Meme: When {i1} meets {i2} but {i3} happens."],
+  sciFi: ["Sci-Fi: In a future where {i1} and {i2} control {i3}."],
+  myth: ["Myth: The legend of {i1}, {i2}, and the forbidden {i3}."],
+  philosophy: ["Philosophy: Is {i1} the opposite of {i2}, or is it just {i3}?"],
+  product: ["Product: Introducing a gadget that combines {i1}, {i2}, and {i3}."]
 };
 
 function getLocalMisfortune() {
@@ -215,9 +226,7 @@ function copyToClipboard() {
 function shareIdea() {
   const text = document.getElementById("output").innerText;
   if (!text) return alert("Nothing to share yet!");
-  const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text + '
-
-Try it: brainmash.xyz')}`;
+  const url = `[https://twitter.com/intent/tweet?text=${encodeURIComponent(text](https://twitter.com/intent/tweet?text=${encodeURIComponent(text) + '\n\nTry it: brainmash.xyz')}`;
   window.open(url, '_blank');
 }
 
@@ -263,18 +272,15 @@ function generateIdea() {
     ideas.push(pickTemplate(category, i1, i2, i3));
   }
 
-  document.getElementById("output").innerText = ideas.join("
-
-");
+  document.getElementById("output").innerText = ideas.join("\n\n");
 
   if (sync) {
     const misfortune = getLocalMisfortune();
     fusionBox.innerText = `🥠 Misfortune Cookie says: “${misfortune}”`;
     fusionBox.style.display = "block";
   }
-}`;
-  window.open(url, '_blank');
 }
+
 function enableChaosPack() {
   const category = document.getElementById("category");
   if (!document.querySelector('option[value="chaos"]')) {
@@ -303,4 +309,3 @@ document.addEventListener('keydown', (e) => {
 </script>
 </body>
 </html>
-
