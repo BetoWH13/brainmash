@@ -1,0 +1,12 @@
+[build]
+  publish = "."         # Root directory (assuming index.html is here)
+  command = ""          # No build command needed for static HTML/JS
+
+[dev]
+  port = 8888           # Optional: local dev port
+  framework = "#static" # Ensure Netlify CLI treats this as a static site
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
