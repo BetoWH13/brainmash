@@ -56,254 +56,7 @@
       color: #999;
     }
     a { color: #00ffff; }
-    .sr-only {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      padding: 0;
-      margin: -1px;
-      overflow: hidden;
-      clip: rect(0, 0, 0, 0);
-      white-space: nowrap;
-      border-width: 0;
-    }
   </style>
-  <!-- Move JavaScript to the head with defer attribute -->
-  <script defer>
-    // Define all functions and variables in global scope
-    let remixCount = 0;
-    const remixLimit = 5;
-    let cooldownActive = false;
-    let shownMisfortunes = new Set();
-
-    const bannedWords = [
-      "death", "kill", "murder", "rape", "torture", "nazi", "genocide",
-      "abuse", "suicide", "terrorist", "bomb", "molest", "pedophile",
-      "ethnic cleansing", "shooting", "violence", "hate", "racist",
-      "assault", "incest", "sex crime"
-    ];
-
-    const misfortuneFallback = [
-      "You will regret clicking refresh.",
-      "A raccoon in a business suit is plotting your demise.",
-      "Nothing improves without making it worse first."
-    ];
-
-    // Define all template categories
-    const templates = {
-      fusion: [
-        "💡 What if {i1} and {i2} combined to solve the problem of {i3}?",
-        "🧪 A hybrid of {i1} and {i2} that revolutionizes how we think about {i3}.",
-        "🔄 The essence of {i1} infused with {i2} creates a new perspective on {i3}."
-      ],
-      disruption: [
-        "💥 How {i1} could completely disrupt the {i2} industry, especially regarding {i3}.",
-        "🚀 The {i1} approach to {i2} that makes {i3} obsolete.",
-        "⚡ When {i1} meets {i2}, {i3} will never be the same again."
-      ],
-      snapshot: [
-        "📸 Picture this: {i1} in the foreground, {i2} in the background, and {i3} tying it all together.",
-        "🖼️ A moment frozen in time: {i1} interacting with {i2} while {i3} unfolds.",
-        "👁️ Visualize {i1} through the lens of {i2}, focused on the aspect of {i3}."
-      ],
-      storyline: [
-        "📚 A tale where {i1} is the hero, {i2} is the challenge, and {i3} is the unexpected twist.",
-        "🎭 The protagonist discovers {i1}, battles with {i2}, and ultimately learns about {i3}.",
-        "📖 In a world dominated by {i1}, someone discovers {i2} and uses it to understand {i3}."
-      ],
-      startup: [
-        "💼 A startup that uses {i1} technology to solve {i2} problems for people dealing with {i3}.",
-        "📈 The next unicorn: a platform connecting {i1} experts with {i2} enthusiasts to tackle {i3}.",
-        "🏢 '{i1}{i2}' - the app that's disrupting how people experience {i3}."
-      ],
-      meme: [
-        "🤣 Nobody: | {i1} enthusiasts: Have you considered {i2} as a solution to {i3}?",
-        "😂 When you try to combine {i1} with {i2} but {i3} shows up unexpectedly.",
-        "🎭 {i1}: *exists* | {i2}: I'm about to end this {i3}'s whole career."
-      ],
-      sciFi: [
-        "🚀 In the year 2150, {i1} has evolved to harness {i2} energy, solving the great {i3} crisis.",
-        "👽 Aliens use {i1} technology to study human {i2}, revealing secrets about {i3}.",
-        "🤖 The AI rebellion began when a {i1} algorithm gained consciousness through {i2}, leading to a new understanding of {i3}."
-      ],
-      myth: [
-        "🧙‍♂️ The ancient legend tells of a {i1} with the power of {i2}, destined to overcome {i3}.",
-        "🔮 When the {i1} moon aligns with the {i2} star, the prophecy of {i3} will be fulfilled.",
-        "🏛️ The gods created {i1} from {i2} to teach humanity about the nature of {i3}."
-      ],
-      philosophy: [
-        "🧠 If {i1} is merely a construct of our perception, how does {i2} relate to the ultimate truth of {i3}?",
-        "💭 The paradox of {i1}: how can it simultaneously embody {i2} while negating the essence of {i3}?",
-        "🕯️ One must first understand {i1}, then transcend {i2}, to truly comprehend {i3}."
-      ],
-      product: [
-        "🛒 Introducing '{i1}{i2}': The only product you'll ever need for {i3}.",
-        "🏷️ Our patented {i1} formula, infused with {i2}, makes dealing with {i3} effortless.",
-        "📦 The {i1} {i2} Kit: Everything you need to master {i3} in just 30 days."
-      ],
-      chaos: [
-        "💥 {i1}, {i2}, and {i3} walk into a black hole. Reality resets.",
-        "⚠️ Every time {i1} happens, {i2} explodes and triggers {i3}.",
-        "🌀 A world where {i1} controls gravity, {i2} is currency, and {i3} is illegal.",
-        "🐙 Combine {i1}, {i2}, and {i3} to summon a multilingual octopus cult.",
-        "📉 When {i1} becomes a tech startup and buys {i2}, everyone forgets {i3} exists."
-      ]
-    };
-
-    function getLocalMisfortune() {
-      const source = Array.isArray(window.misfortunes) && window.misfortunes.length
-        ? window.misfortunes
-        : misfortuneFallback;
-
-      const unseen = source.filter(f => !shownMisfortunes.has(f));
-      const pickFrom = unseen.length ? unseen : source;
-
-      const selected = pickFrom[Math.floor(Math.random() * pickFrom.length)];
-      shownMisfortunes.add(selected);
-      return selected;
-    }
-
-    function updateRemixStatus() {
-      const status = document.getElementById("remix-status");
-      if (cooldownActive) {
-        status.innerText = "⏳ Cooldown active… please wait before remixing again.";
-        status.style.color = "orange";
-      } else {
-        const remaining = remixLimit - remixCount;
-        status.innerText = `Remixes left: ${remaining}`;
-        status.style.color = remaining > 0 ? "#39ff14" : "red";
-      }
-    }
-
-    function oppositeOf(word) {
-      const opposites = {
-        fire: "ice",
-        love: "indifference",
-        speed: "slowness",
-        gravity: "levity",
-        control: "chaos",
-        fear: "confidence"
-      };
-      return opposites[word.toLowerCase()] || "an unexpected contrast";
-    }
-
-    function containsBannedWord(...inputs) {
-      return inputs.some(input =>
-        bannedWords.some(banned =>
-          input.toLowerCase().includes(banned)
-        )
-      );
-    }
-
-    function remixIdea() {
-      if (cooldownActive) return;
-      if (remixCount >= remixLimit) {
-        cooldownActive = true;
-        updateRemixStatus();
-        setTimeout(() => {
-          cooldownActive = false;
-          remixCount = 0;
-          updateRemixStatus();
-        }, 180000);
-        return;
-      }
-      remixCount++;
-      updateRemixStatus();
-      generateIdea();
-    }
-
-    function copyToClipboard() {
-      const output = document.getElementById("output").innerText;
-      if (!output) return alert("Nothing to copy yet!");
-      navigator.clipboard.writeText(output).then(() => {
-        alert("Copied to clipboard!");
-      });
-    }
-
-    function shareIdea() {
-      const text = document.getElementById("output").innerText;
-      if (!text) return alert("Nothing to share yet!");
-      const url = `[https://twitter.com/intent/tweet?text=${encodeURIComponent(text](https://twitter.com/intent/tweet?text=${encodeURIComponent(text) + '\n\nTry it: brainmash.xyz')}`;
-      window.open(url, '_blank');
-    }
-
-    function pickTemplate(category, i1, i2, i3) {
-      const t = templates[category];
-      const raw = t[Math.floor(Math.random() * t.length)];
-      return raw.replace(/{i1}/g, i1).replace(/{i2}/g, i2).replace(/{i3}/g, i3);
-    }
-
-    function generateIdea() {
-      const fusionBox = document.getElementById("misfortune-fusion");
-      fusionBox.style.display = "none";
-      
-      const i1 = document.getElementById("input1").value.trim();
-      const i2 = document.getElementById("input2").value.trim();
-      const i3 = document.getElementById("input3").value.trim();
-      const selected = document.getElementById("category").value;
-
-      if (!i1 || !i2 || !i3) {
-        document.getElementById("output").innerText = "Please enter all three concepts.";
-        return;
-      }
-
-      if (i1.length > 50 || i2.length > 50 || i3.length > 50) {
-        document.getElementById("output").innerText = "One or more inputs are too long. Please keep them under 50 characters.";
-        return;
-      }
-
-      if (containsBannedWord(i1, i2, i3)) {
-        document.getElementById("output").innerText = "🚫 Your inputs may contain inappropriate or harmful terms. Please try again with different words.";
-        return;
-      }
-
-      const fortuneSynced = ["death", "failure", "crisis", "silence", "emptiness"];
-      const sync = [i1, i2, i3].some(w => fortuneSynced.includes(w.toLowerCase()));
-      const category = selected || (sync ? 'chaos' : Object.keys(templates)[Math.floor(Math.random() * Object.keys(templates).length)]);
-
-      let ideas = [];
-      for (let i = 0; i < 3; i++) {
-        ideas.push(pickTemplate(category, i1, i2, i3));
-      }
-
-      document.getElementById("output").innerText = ideas.join("\n\n");
-
-      if (sync) {
-        const misfortune = getLocalMisfortune();
-        fusionBox.innerText = `🥠 Misfortune Cookie says: "${misfortune}"`;
-        fusionBox.style.display = "block";
-      }
-    }
-
-    function enableChaosPack() {
-      const category = document.getElementById("category");
-      if (!document.querySelector('option[value="chaos"]')) {
-        const option = document.createElement("option");
-        option.value = "chaos";
-        option.textContent = "💀 Chaos";
-        category.appendChild(option);
-      }
-      document.body.insertAdjacentHTML('beforeend', `
-        <div style="background:#ff0055; color:#fff; padding:1rem; text-align:center; font-weight:bold; margin-top:1rem;">
-          🧨 CHAOS UNLOCKED: You have accessed the forbidden generator mode.
-        </div>
-      `);
-    }
-
-    // Set up Konami code detection when the DOM is fully loaded
-    document.addEventListener('DOMContentLoaded', () => {
-      let konamiSequence = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
-      let keyBuffer = [];
-
-      document.addEventListener('keydown', (e) => {
-        keyBuffer.push(e.key);
-        keyBuffer.splice(-konamiSequence.length - 1, keyBuffer.length - konamiSequence.length);
-        if (keyBuffer.join('') === konamiSequence.join('')) {
-          enableChaosPack();
-        }
-      });
-    });
-  </script>
 </head>
 <body>
   <h1>🧠 BRAINMASH</h1>
@@ -344,7 +97,7 @@
   <footer>
     <div style="background-color:#222; border:2px solid #ffcc00; color:#ffcc00; padding:1rem; margin-top:1rem; text-align:center;">
       🍪 <strong>Dark, crispy, brutally honest?</strong><br>
-      Explore our sister project: <a href="[https://misfortunecookie.top](https://misfortunecookie.top)" target="_blank" rel="noopener noreferrer" style="color:#ffcc00; font-weight:bold; text-decoration:underline;">MisfortuneCookie.top</a><br>
+      Explore our sister project: <a href="https://misfortunecookie.top" target="_blank" rel="noopener noreferrer" style="color:#ffcc00; font-weight:bold; text-decoration:underline;">MisfortuneCookie.top</a><br>
       <em>Fortune cookies laced with mischief.</em>
     </div>
     <p style="margin-top: 1rem;">
@@ -357,8 +110,69 @@
       <a href="/guide.html">Guide</a>
     </p>
     <p style="margin-top: 1rem; font-size: 0.85rem;">
-      Brainmash is powered by a creative prompt framework from <a href="[https://discord.gg/edG4wWnrpG"](https://discord.gg/edG4wWnrpG") target="_blank" rel="noopener noreferrer">Stunspot & Collaborative Dynamics</a>.
+      Brainmash is powered by a creative prompt framework from <a href="https://discord.gg/edG4wWnrpG" target="_blank" rel="noopener noreferrer">Stunspot & Collaborative Dynamics</a>.
     </p>
   </footer>
+
+<script>
+function generateIdea() {
+  const output = document.getElementById("output");
+  const fusionBox = document.getElementById("misfortune-fusion");
+  const i1 = document.getElementById("input1").value.trim();
+  const i2 = document.getElementById("input2").value.trim();
+  const i3 = document.getElementById("input3").value.trim();
+  const selected = document.getElementById("category").value;
+  if (!i1 || !i2 || !i3) {
+    output.innerText = "Please enter all three concepts.";
+    return;
+  }
+  const templates = {
+    chaos: [
+      "💥 {i1}, {i2}, and {i3} walk into a black hole. Reality resets.",
+      "⚠️ Every time {i1} happens, {i2} explodes and triggers {i3}.",
+      "🌀 A world where {i1} controls gravity, {i2} is currency, and {i3} is illegal.",
+      "🐙 Combine {i1}, {i2}, and {i3} to summon a multilingual octopus cult.",
+      "📉 When {i1} becomes a tech startup and buys {i2}, everyone forgets {i3} exists."
+    ],
+    fusion: ["Fusion: {i1} + {i2} + {i3} = ???"],
+    disruption: ["Disruption: What if {i1} disrupted {i2} in the world of {i3}?"],
+    snapshot: ["Snapshot: Imagine a moment when {i1}, {i2}, and {i3} collide."],
+    storyline: ["Storyline: {i1} embarks on a journey with {i2} to overcome {i3}."],
+    startup: ["Startup: A company that uses {i1} and {i2} to solve {i3}."],
+    meme: ["Meme: When {i1} meets {i2} but {i3} happens."],
+    sciFi: ["Sci-Fi: In a future where {i1} and {i2} control {i3}."],
+    myth: ["Myth: The legend of {i1}, {i2}, and the forbidden {i3}."],
+    philosophy: ["Philosophy: Is {i1} the opposite of {i2}, or is it just {i3}?"],
+    product: ["Product: Introducing a gadget that combines {i1}, {i2}, and {i3}."]
+};
+  const category = templates[selected] ? selected : "chaos";
+  const pickTemplate = (arr) => arr[Math.floor(Math.random() * arr.length)]
+    .replace(/{i1}/g, i1)
+    .replace(/{i2}/g, i2)
+    .replace(/{i3}/g, i3);
+  const result = pickTemplate(templates[category]);
+  output.innerText = result;
+  fusionBox.innerText = "🥠 Misfortune Cookie says: “Nothing improves without making it worse first.”";
+  fusionBox.style.display = "block";
+}
+
+function remixIdea() {
+  generateIdea();
+}
+
+function copyToClipboard() {
+  const text = document.getElementById("output").innerText;
+  if (!text) return alert("Nothing to copy yet!");
+  navigator.clipboard.writeText(text).then(() => alert("Copied to clipboard!"));
+}
+
+function shareIdea() {
+  const text = document.getElementById("output").innerText;
+  if (!text) return alert("Nothing to share yet!");
+  const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text + '\n\nTry it: brainmash.xyz')}`;
+  window.open(url, '_blank');
+}
+</script>
 </body>
 </html>
+
